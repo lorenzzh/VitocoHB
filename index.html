@@ -111,7 +111,7 @@
     let yaSeMovioElBoton = false; // Flag para controlar si el botón ya se movió
 
     // Cuando el mouse entra (en PC) o en el primer tap (en celu, a veces dispara mouseenter)
-    boton.addEventListener("mouseenter", () => {
+    boton.addEventListener("click", () => {
       if (!yaSeMovioElBoton) { // Solo si no se ha movido antes
         const x = Math.random() * 200 - 100; // Un rango más pequeño para que no se vaya tan lejos
         const y = Math.random() * 100 - 50;  // Un rango más pequeño
