@@ -107,36 +107,42 @@
       document.body.appendChild(emoji);
     }
 
-    const boton = document.getElementById("boton-celebrar");
-    let yaSeMovioElBoton = false; // Flag para controlar si el botón ya se movió
+     const boton = document.getElementById("boton-celebrar");
+    let movidas = 0;
+    let evadiendo = true;
 
-    // Cuando el mouse entra (en PC) o en el primer tap (en celu, a veces dispara mouseenter)
-    boton.addEventListener("click", () => {
-      if (!yaSeActivoElBoton) { // Si es la primera vez que se hace click/tap
-        const x = Math.random() * 200 - 100; // Rango para que no se vaya tan lejos
-        const y = Math.random() * 100 - 50;  // Rango para que no se vaya tan lejos
+    boton.addEventListener("mouseenter", () => {
+      if (evadiendo && movidas === 0) {
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        
-        // Desactivamos el cursor para que no se pueda clickear mientras se mueve
-        // y para asegurar que el link se abra solo una vez por esta interacción inicial
-        boton.style.pointerEvents = 'none'; 
-
-        yaSeActivoElBoton = true; // Marcamos que la secuencia ya se inició
-
-        // Abre el link después de que la animación de movimiento haya terminado (0.3s + un pequeño extra)
-        setTimeout(() => {
-          window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-          // Opcional: Si quieres que el botón vuelva a ser clickeable para abrir el link de nuevo,
-          // o si el link se cerró. Pero si abre en _blank, no es necesario.
-          // boton.style.pointerEvents = 'auto'; 
-        }, 400); // 400 milisegundos para que se vea bien la transición
-      } else {
-        // Si ya se activó el botón una vez y vuelven a clickear, simplemente abrimos el link de nuevo.
-        // Esto cubre el caso de que cierren la pestaña y quieran volver a ver la imagen.
-        window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+        movidas = 1;
       }
     });
-    */
+
+    boton.addEventListener("click", (event) => {
+      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
+
+      if (isTouchDevice && evadiendo && movidas === 0) {
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
+        boton.style.transform = `translate(${x}px, ${y}px)`;
+        movidas = 1;
+        return; 
+      }
+
+      if (movidas === 1 || !evadiendo) {
+        evadiendo = false;
+        boton.style.transform = 'translate(0, 0)';
+        window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+      } else {
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
+        boton.style.transform = `translate(${x}px, ${y}px)`;
+        movidas = 1;
+        return;
+      }
+    });
   </script>
 </body>
 </html>
