@@ -108,49 +108,42 @@
     }
 
     const boton = document.getElementById("boton-celebrar");
-let seMovioUnaVez = false;
-let procesandoPrimerToque = false; // Nuevo flag para evitar doble disparo en el primer toque
+let seMovioEnElPrimerToque = false; // Flag que indica si el botón ya se movió con el primer tap/click
 
 boton.addEventListener("mouseenter", () => {
-  // Esta parte es para el PC, si el mouse entra.
-  // No nos importa mucho para el celular, pero la dejamos por si acaso.
-  if (!seMovioUnaVez) {
+  // En PC, esto moverá el botón una vez al pasar el mouse.
+  // No afecta el comportamiento de 2 taps en móvil.
+  if (!seMovioEnElPrimerToque) {
     const x = Math.random() * 200 - 100;
     const y = Math.random() * 100 - 50;
     boton.style.transform = `translate(${x}px, ${y}px)`;
-    seMovioUnaVez = true;
+    seMovioEnElPrimerToque = true;
   }
 });
 
 boton.addEventListener("click", (event) => {
-  // Aquí es donde está la magia para el celular, sin importar el PC.
-  // Intentamos ser lo más estrictos posible.
-  if (!seMovioUnaVez) {
-    // Si es el primer tap y no se ha movido todavía
-    if (!procesandoPrimerToque) { // Evita que se dispare múltiples veces en un microsegundo
-      procesandoPrimerToque = true; // Marca que estamos procesando el primer toque
+  // Esta es la lógica clave para el comportamiento de 2 taps en el CELU.
+  if (!seMovioEnElPrimerToque) {
+    // Si es el PRIMER TAP/CLICK:
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 100 - 50;
+    boton.style.transform = `translate(${x}px, ${y}px)`;
+    seMovioEnElPrimerToque = true; // El botón ya se movió
 
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 100 - 50;
-      boton.style.transform = `translate(${x}px, ${y}px)`;
-      seMovioUnaVez = true; // El botón ya se movió
+    // IMPORTANTE: Aquí prevenimos la acción por defecto del click (abrir el link).
+    // Esto es para que el primer tap SÓLO mueva el botón y NADA MÁS.
+    event.preventDefault(); 
+    event.stopPropagation(); // También para que no se propague a otros elementos.
 
-      // Desactivamos temporalmente el click en el botón para que el primer tap no abra el link
-      // Y permitimos que se pueda clickear de nuevo después de un breve momento
-      boton.style.pointerEvents = 'none'; // Deshabilita el click
-      setTimeout(() => {
-        boton.style.pointerEvents = 'auto'; // Habilita el click de nuevo
-        procesandoPrimerToque = false; // Resetear el flag
-      }, 500); // Dar un tiempo prudente para que no se active el link en el mismo tap
-
-      event.preventDefault(); // Evita que el navegador abra el link con el primer click/tap
-      event.stopPropagation(); // Evita que el evento burbujee y active otras cosas
-      return; // Detenemos la función aquí para que NO abra el link.
-    }
+    // No abrimos el link aquí. El usuario DEBE hacer otro tap.
+    return; // Salimos de la función después de moverlo en el primer tap.
   } else {
-    // Si ya se movió el botón (fue el segundo tap o click en PC)
-    // Aquí sí abrimos el link.
+    // Si ya se movió el botón (es el SEGUNDO TAP/CLICK o un click posterior en PC):
+    // Aquí SÍ abrimos el link.
     window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+    
+    // Opcional: Si quieres que el botón vuelva a su posición original después de abrir el link
+    // boton.style.transform = 'translate(0, 0)'; 
   }
 });
     
