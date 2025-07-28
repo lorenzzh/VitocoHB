@@ -108,36 +108,35 @@
     }
 
     const boton = document.getElementById("boton-celebrar");
-    let seHaMovidoUnaVez = false; // Este es el nuevo flag simple
+    let yaSeMovioElBoton = false; // Flag para controlar si el botón ya se movió
 
-    // El evento 'mouseenter' sigue siendo para el movimiento en desktop
+    // Cuando el mouse entra (en PC) o en el primer tap (en celu, a veces dispara mouseenter)
     boton.addEventListener("mouseenter", () => {
-      if (!seHaMovidoUnaVez) { // Si no se ha movido aún
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 100 - 50;
+      if (!yaSeMovioElBoton) { // Solo si no se ha movido antes
+        const x = Math.random() * 200 - 100; // Un rango más pequeño para que no se vaya tan lejos
+        const y = Math.random() * 100 - 50;  // Un rango más pequeño
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        seHaMovidoUnaVez = true; // Marcamos que ya se movió
+        yaSeMovioElBoton = true; // Marcamos que ya se movió
       }
     });
 
-    // El evento 'click' ahora maneja la apertura del link, y también el movimiento si es el primer click/tap
+    // Cuando se hace click (tanto en PC como en celu)
     boton.addEventListener("click", () => {
-      if (!seHaMovidoUnaVez) { // Si es el primer click/tap (en móvil principalmente)
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 100 - 50;
-        boton.style.transform = `translate(${x}px, ${y}px)`;
-        seHaMovidoUnaVez = true; // Marcamos que ya se movió
-        // No abrimos el link inmediatamente. El usuario tendrá que hacer otro click.
-        // Esto es para que en móvil el primer tap mueva y el segundo abra.
-        // Si quieres que el PRIMER tap lo mueva Y abra el link, borra el 'return' de abajo.
-        return; 
-      }
-
-      // Si seHaMovidoUnaVez es true (porque se movió con mouseenter o con el primer click/tap),
-      // entonces ahora sí abrimos el link.
+      // Este evento SIEMPRE abrirá el link, independientemente de si se movió o no.
+      // La idea es que el "click" es el evento final que abre la URL.
       window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
     });
+
+    // Opcional: Esto es por si quieres que el botón "vuelva" a su lugar
+    // si el mouse sale sin hacer click en el PC, antes de que se mueva.
+    // Aunque con la nueva lógica, una vez que se mueve, se queda ahí.
+    /*
+    boton.addEventListener("mouseleave", () => {
+      if (!yaSeMovioElBoton) { // Si no se ha movido aún, lo devuelve
+        boton.style.transform = 'translate(0, 0)';
+      }
+    });
+    */
   </script>
 </body>
 </html>
-
