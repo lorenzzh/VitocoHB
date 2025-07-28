@@ -108,11 +108,11 @@
     }
 
     const boton = document.getElementById("boton-celebrar");
-let seMovioEnElPrimerToque = false; // Flag que indica si el botón ya se movió con el primer tap/click
+let seMovioEnElPrimerToque = false;
+let bloqueandoClickTemporalmente = false; // Nuevo flag para el bloqueo momentáneo
 
 boton.addEventListener("mouseenter", () => {
-  // En PC, esto moverá el botón una vez al pasar el mouse.
-  // No afecta el comportamiento de 2 taps en móvil.
+  // Esta parte es para el PC (mouse), no afecta el comportamiento de 2 taps en móvil.
   if (!seMovioEnElPrimerToque) {
     const x = Math.random() * 200 - 100;
     const y = Math.random() * 100 - 50;
@@ -122,28 +122,57 @@ boton.addEventListener("mouseenter", () => {
 });
 
 boton.addEventListener("click", (event) => {
-  // Esta es la lógica clave para el comportamiento de 2 taps en el CELU.
-  if (!seMovioEnElPrimerToque) {
-    // Si es el PRIMER TAP/CLICK:
-    const x = Math.random() * 200 - 100;
-    const y = Math.random() * 100 - 50;
-    boton.style.transform = `translate(${x}px, ${y}px)`;
-    seMovioEnElPrimerToque = true; // El botón ya se movió
+  // Verificamos si es un dispositivo táctil (es vital para el comportamiento del celu)
+  const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
 
-    // IMPORTANTE: Aquí prevenimos la acción por defecto del click (abrir el link).
-    // Esto es para que el primer tap SÓLO mueva el botón y NADA MÁS.
-    event.preventDefault(); 
-    event.stopPropagation(); // También para que no se propague a otros elementos.
+  if (isTouchDevice) {
+    // *** Lógica ESPECÍFICA para dispositivos móviles (1 tap mueve, 2do tap abre) ***
+    if (!seMovioEnElPrimerToque) {
+      // Si es el PRIMER TAP en el móvil
+      if (bloqueandoClickTemporalmente) {
+          // Si ya estamos en proceso de bloquear el click, simplemente salimos.
+          // Esto evita múltiples disparos en un tap muy rápido.
+          return; 
+      }
+      
+      bloqueandoClickTemporalmente = true; // Activamos el bloqueo
 
-    // No abrimos el link aquí. El usuario DEBE hacer otro tap.
-    return; // Salimos de la función después de moverlo en el primer tap.
+      const x = Math.random() * 200 - 100;
+      const y = Math.random() * 100 - 50;
+      boton.style.transform = `translate(${x}px, ${y}px)`;
+      seMovioEnElPrimerToque = true; // Ya se movió
+
+      // Desactivamos el botón *inmediatamente* después del movimiento
+      // para que el mismo evento 'click' no pueda abrir el link.
+      // Y lo reactivamos muy rápido para que el 2do tap funcione.
+      boton.style.pointerEvents = 'none'; 
+      setTimeout(() => {
+        boton.style.pointerEvents = 'auto'; // Vuelve a ser clickeable
+        bloqueandoClickTemporalmente = false; // Resetear el flag de bloqueo
+      }, 300); // Dale unos milisegundos para que el click no se propague.
+
+      event.preventDefault(); // SUPER IMPORTANTE: Cancela la acción por defecto del navegador (abrir link)
+      event.stopPropagation(); // Evita que el evento siga su curso.
+      return; // Salimos de la función. El link NO SE ABRE.
+    } else {
+      // Si ya se movió (es el SEGUNDO TAP en el móvil)
+      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+    }
   } else {
-    // Si ya se movió el botón (es el SEGUNDO TAP/CLICK o un click posterior en PC):
-    // Aquí SÍ abrimos el link.
+    // *** Lógica para PC (no te importa, pero la dejamos funcional) ***
+    if (!seMovioEnElPrimerToque) { 
+        // Si en PC se hace click antes de mouseenter, lo movemos
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
+        boton.style.transform = `translate(${x}px, ${y}px)`;
+        seMovioEnElPrimerToque = true;
+        // En PC, podemos dejar que el mismo click abra el link después de moverlo,
+        // o pedir un segundo click. Para simplificar, si no te importa el PC:
+        // window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+        // O si quieres que se parezca al celu y necesite 2 clics en PC:
+        return; // Pide un segundo click en PC también.
+    }
     window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-    
-    // Opcional: Si quieres que el botón vuelva a su posición original después de abrir el link
-    // boton.style.transform = 'translate(0, 0)'; 
   }
 });
     
