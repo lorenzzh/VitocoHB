@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Cumpleaños Carlos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      font-family: 'Raleway', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+      color: white;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3em;
+      margin-bottom: 0.5em;
+      position: relative;
+      z-index: 10;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin: 0.3em;
+      position: relative;
+      z-index: 10;
+      color: #ccc;
+    }
+
+    .celebrar-btn {
+      margin-top: 2em;
+      padding: 12px 28px;
+      font-size: 1em;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 75, 43, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    .celebrar-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+    }
+
+    .emoji {
+      position: absolute;
+      top: -2em;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.7;
+      font-size: 2em;
+      animation-name: caer;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      z-index: 1;
+    }
+
+    @keyframes caer {
+      0% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Feliz Cumpleaños Viejo QLO</h1>
+  <p>Hoy celebramos los 87 años de bida</p>
+  <p>porque ser elegante no quita lo buena onda 🍷</p>
+  <p>Te deseamos más alegría que drama,</p>
+  <p>y más brindis que excusas para no salir pajaron.</p>
+  <p><em>Viejo Reqlo, pero con clase 😎</em></p>
+  <button id="boton-celebrar" class="celebrar-btn">Te hice un regalito 🥂</button>
+
+  <script>
+    const emojis = ['🎉', '🎂', '🥳', '🎁', '🍰'];
+    const totalEmojis = 60; // cantidad moderada
+
+    for (let i = 0; i < totalEmojis; i++) {
+      const emoji = document.createElement('div');
+      emoji.classList.add('emoji');
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = `${Math.random() * 100}vw`;
+      emoji.style.fontSize = `${1.5 + Math.random() * 1.5}em`;
+      emoji.style.animationDuration = `${15 + Math.random() * 10}s`;
+      emoji.style.animationDelay = `${-Math.random() * 20}s`;
+      document.body.appendChild(emoji);
+    }
+
+    const boton = document.getElementById("boton-celebrar");
+    let movidas = 0;
+    let evadiendo = true;
+
+    boton.addEventListener("mouseenter", () => {
+      if (evadiendo && movidas < 3) {
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
+        boton.style.transform = `translate(${x}px, ${y}px)`;
+        movidas++;
+      }
+    });
+
+    boton.addEventListener("click", () => {
+      if (movidas < 3) return; // sigue evadiendo
+      evadiendo = false;
+      boton.style.transform = 'translate(0, 0)';
+      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+            
+    });
+  </script>
+</body>
+</html>
+
