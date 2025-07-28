@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Feliz Cumpleaños Carlos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght%40700&family=Raleway&display=swap" rel="stylesheet" />
   <style>
     html, body {
       margin: 0;
@@ -84,7 +84,7 @@
   </style>
 </head>
 <body>
-  <h1>Feliz Cumpleaños Carlitos Viejo QLO</h1>
+  <h1>Feliz Cumpleaños Viejo QLO</h1>
   <p>Hoy celebramos los 87 años de bida</p>
   <p>porque ser elegante no quita lo buena onda 🍷</p>
   <p>Te deseamos más alegría que drama,</p>
@@ -108,24 +108,34 @@
     }
 
     const boton = document.getElementById("boton-celebrar");
-    let movidas = 0;
-    let evadiendo = true;
+    let seHaMovidoUnaVez = false; // Este es el nuevo flag simple
 
-     boton.addEventListener("mouseenter", () => {
-      if (evadiendo && movidas < 1) {
+    // El evento 'mouseenter' sigue siendo para el movimiento en desktop
+    boton.addEventListener("mouseenter", () => {
+      if (!seHaMovidoUnaVez) { // Si no se ha movido aún
         const x = Math.random() * 200 - 100;
         const y = Math.random() * 100 - 50;
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        movidas++;
+        seHaMovidoUnaVez = true; // Marcamos que ya se movió
       }
     });
 
+    // El evento 'click' ahora maneja la apertura del link, y también el movimiento si es el primer click/tap
     boton.addEventListener("click", () => {
-      if (movidas = 2) return; // sigue evadiendo
-      evadiendo = false;
-      // boton.style.transform = 'translate(0, 0)';
+      if (!seHaMovidoUnaVez) { // Si es el primer click/tap (en móvil principalmente)
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 100 - 50;
+        boton.style.transform = `translate(${x}px, ${y}px)`;
+        seHaMovidoUnaVez = true; // Marcamos que ya se movió
+        // No abrimos el link inmediatamente. El usuario tendrá que hacer otro click.
+        // Esto es para que en móvil el primer tap mueva y el segundo abra.
+        // Si quieres que el PRIMER tap lo mueva Y abra el link, borra el 'return' de abajo.
+        return; 
+      }
+
+      // Si seHaMovidoUnaVez es true (porque se movió con mouseenter o con el primer click/tap),
+      // entonces ahora sí abrimos el link.
       window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-            
     });
   </script>
 </body>
