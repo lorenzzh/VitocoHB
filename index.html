@@ -108,33 +108,49 @@
     }
 
     const boton = document.getElementById("boton-celebrar");
-    let seMuevePorPrimeraVez = false; // Este es el flag principal para controlar el movimiento
+    let seMovioUnaVez = false; // Este flag controla si el botón ya se movió
 
-    // Evento para cuando el mouse entra (en PC)
+    // Lógica para el mouseenter (comportamiento de PC)
     boton.addEventListener("mouseenter", () => {
-      if (!seMuevePorPrimeraVez) { // Si NO se ha movido antes
+      if (!seMovioUnaVez) { // Si no se ha movido aún
         const x = Math.random() * 200 - 100;
         const y = Math.random() * 100 - 50;
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        seMuevePorPrimeraVez = true; // Marcamos que ya se movió
+        seMovioUnaVez = true; // Marca que ya se movió
       }
     });
 
-    // Evento para cuando se hace click (PC y móvil)
-    boton.addEventListener("click", () => {
-      if (!seMuevePorPrimeraVez) { // Esto es para el primer tap en móvil (que a veces no activa mouseenter primero)
-        // O para PC si se hace click antes de mouseenter (raro, pero posible)
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 100 - 50;
-        boton.style.transform = `translate(${x}px, ${y}px)`;
-        seMuevePorPrimeraVez = true; // Marcamos que ya se movió
-        // IMPORTANTE: En el primer tap/click que causa el movimiento, NO abrimos el link aún.
-        // Se necesita un segundo tap/click.
-        return; 
-      }
+    // Lógica para el click (comportamiento principal en móvil y también en PC)
+    boton.addEventListener("click", (event) => {
+      // Intentamos detectar si es un dispositivo táctil
+      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
 
-      // Si el botón YA se movió (seMuevePorPrimeraVez es true), entonces siempre abrimos el link
-      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+      if (isTouchDevice) {
+        // *** LÓGICA ESPECÍFICA PARA DISPOSITIVOS MÓVILES (1 tap mueve, 2do tap abre) ***
+        if (!seMovioUnaVez) { // Si es el primer tap y no se ha movido
+          const x = Math.random() * 200 - 100;
+          const y = Math.random() * 100 - 50;
+          boton.style.transform = `translate(${x}px, ${y}px)`;
+          seMovioUnaVez = true; // Marcamos que ya se movió
+          event.preventDefault(); // IMPORTANTE: Evita que el primer tap abra el link.
+          return; // Terminamos aquí, el link no se abre en el primer tap.
+        } else {
+          // Si ya se movió (segundo tap), abre el link
+          window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+        }
+      } else {
+        // *** LÓGICA PARA PC (Click siempre abre el link una vez que se movió con mouseenter o si hacen click de una) ***
+        if (!seMovioUnaVez) { 
+            // Esto cubre el caso si en PC el usuario hace click ANTES de pasar el mouse.
+            // Lo movemos una vez y luego esperamos otro click para abrir.
+            const x = Math.random() * 200 - 100;
+            const y = Math.random() * 100 - 50;
+            boton.style.transform = `translate(${x}px, ${y}px)`;
+            seMovioUnaVez = true;
+            return; // Esperamos otro click para abrir el link en PC si se movió con click inicial.
+        }
+        window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+      }
     });
   </script>
 </body>
