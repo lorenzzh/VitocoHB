@@ -107,41 +107,34 @@
       document.body.appendChild(emoji);
     }
 
-     const boton = document.getElementById("boton-celebrar");
-    let movidas = 0;
-    let evadiendo = true;
+    const boton = document.getElementById("boton-celebrar");
+    let seMuevePorPrimeraVez = false; // Este es el flag principal para controlar el movimiento
 
+    // Evento para cuando el mouse entra (en PC)
     boton.addEventListener("mouseenter", () => {
-      if (evadiendo && movidas === 0) {
+      if (!seMuevePorPrimeraVez) { // Si NO se ha movido antes
         const x = Math.random() * 200 - 100;
         const y = Math.random() * 100 - 50;
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        movidas = 1;
+        seMuevePorPrimeraVez = true; // Marcamos que ya se movió
       }
     });
 
-    boton.addEventListener("click", (event) => {
-      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
-
-      if (isTouchDevice && evadiendo && movidas === 0) {
+    // Evento para cuando se hace click (PC y móvil)
+    boton.addEventListener("click", () => {
+      if (!seMuevePorPrimeraVez) { // Esto es para el primer tap en móvil (que a veces no activa mouseenter primero)
+        // O para PC si se hace click antes de mouseenter (raro, pero posible)
         const x = Math.random() * 200 - 100;
         const y = Math.random() * 100 - 50;
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        movidas = 1;
+        seMuevePorPrimeraVez = true; // Marcamos que ya se movió
+        // IMPORTANTE: En el primer tap/click que causa el movimiento, NO abrimos el link aún.
+        // Se necesita un segundo tap/click.
         return; 
       }
 
-      if (movidas === 1 || !evadiendo) {
-        evadiendo = false;
-        boton.style.transform = 'translate(0, 0)';
-        window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-      } else {
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 100 - 50;
-        boton.style.transform = `translate(${x}px, ${y}px)`;
-        movidas = 1;
-        return;
-      }
+      // Si el botón YA se movió (seMuevePorPrimeraVez es true), entonces siempre abrimos el link
+      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
     });
   </script>
 </body>
