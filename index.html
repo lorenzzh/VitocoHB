@@ -112,31 +112,28 @@
 
     // Cuando el mouse entra (en PC) o en el primer tap (en celu, a veces dispara mouseenter)
     boton.addEventListener("click", () => {
-      if (!yaSeMovioElBoton) { // Solo si no se ha movido antes
-        const x = Math.random() * 200 - 100; // Un rango más pequeño para que no se vaya tan lejos
-        const y = Math.random() * 100 - 50;  // Un rango más pequeño
+      if (!yaSeActivoElBoton) { // Si es la primera vez que se hace click/tap
+        const x = Math.random() * 200 - 100; // Rango para que no se vaya tan lejos
+        const y = Math.random() * 100 - 50;  // Rango para que no se vaya tan lejos
         boton.style.transform = `translate(${x}px, ${y}px)`;
-        yaSeMovioElBoton = true; // Marcamos que ya se movió
-         boton.addEventListener("click", () => {
-      // Este evento SIEMPRE abrirá el link, independientemente de si se movió o no.
-      // La idea es que el "click" es el evento final que abre la URL.
-      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-      }
-    });
+        
+        // Desactivamos el cursor para que no se pueda clickear mientras se mueve
+        // y para asegurar que el link se abra solo una vez por esta interacción inicial
+        boton.style.pointerEvents = 'none'; 
 
-    // Cuando se hace click (tanto en PC como en celu)
-   // boton.addEventListener("click", () => {
-      // Este evento SIEMPRE abrirá el link, independientemente de si se movió o no.
-      // La idea es que el "click" es el evento final que abre la URL.
-        //window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");});
+        yaSeActivoElBoton = true; // Marcamos que la secuencia ya se inició
 
-    // Opcional: Esto es por si quieres que el botón "vuelva" a su lugar
-    // si el mouse sale sin hacer click en el PC, antes de que se mueva.
-    // Aunque con la nueva lógica, una vez que se mueve, se queda ahí.
-    /*
-    boton.addEventListener("mouseleave", () => {
-      if (!yaSeMovioElBoton) { // Si no se ha movido aún, lo devuelve
-        boton.style.transform = 'translate(0, 0)';
+        // Abre el link después de que la animación de movimiento haya terminado (0.3s + un pequeño extra)
+        setTimeout(() => {
+          window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
+          // Opcional: Si quieres que el botón vuelva a ser clickeable para abrir el link de nuevo,
+          // o si el link se cerró. Pero si abre en _blank, no es necesario.
+          // boton.style.pointerEvents = 'auto'; 
+        }, 400); // 400 milisegundos para que se vea bien la transición
+      } else {
+        // Si ya se activó el botón una vez y vuelven a clickear, simplemente abrimos el link de nuevo.
+        // Esto cubre el caso de que cierren la pestaña y quieran volver a ver la imagen.
+        window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
       }
     });
     */
