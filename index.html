@@ -117,15 +117,18 @@
         const y = Math.random() * 100 - 50;  // Un rango más pequeño
         boton.style.transform = `translate(${x}px, ${y}px)`;
         yaSeMovioElBoton = true; // Marcamos que ya se movió
+         boton.addEventListener("click", () => {
+      // Este evento SIEMPRE abrirá el link, independientemente de si se movió o no.
+      // La idea es que el "click" es el evento final que abre la URL.
+      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
       }
     });
 
     // Cuando se hace click (tanto en PC como en celu)
-    boton.addEventListener("click", () => {
+   // boton.addEventListener("click", () => {
       // Este evento SIEMPRE abrirá el link, independientemente de si se movió o no.
       // La idea es que el "click" es el evento final que abre la URL.
-      window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");
-    });
+        //window.open("https://i.pinimg.com/736x/0e/67/e2/0e67e2c0e385c0a8cc4741968ca9a9cb.jpg", "_blank");});
 
     // Opcional: Esto es por si quieres que el botón "vuelva" a su lugar
     // si el mouse sale sin hacer click en el PC, antes de que se mueva.
